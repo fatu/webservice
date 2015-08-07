@@ -35,4 +35,9 @@ public class CategoryServicesImpl implements CategoryServices{
 
         return categoryRepository.add(category);
     }
+
+    @Override
+    public void update(Category category) {
+
+    }
 }

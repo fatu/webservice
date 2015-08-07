@@ -16,6 +16,7 @@ import org.junit.Test;
 
 import javax.validation.Validation;
 import javax.validation.Validator;
+import java.io.FileNotFoundException;
 
 /**
  * @author fatu
@@ -76,5 +77,31 @@ public class CategoryServicesUTest {
             assertThat(e.getFieldName(), is(equalTo("name")));
         }
     }
+
+    @Test
+    public void updateCategoryWithNullName() {
+        updateCategoryWithInvalidName(null);
+    }
+
+    @Test
+    public void updateCategoryWithShortName() {
+        updateCategoryWithInvalidName("A");
+    }
+
+    @Test
+    public void updateCategoryWithLongName() {
+        updateCategoryWithInvalidName("This is a long name that will cause an exception to be thrown");
+    }
+
+    private void updateCategoryWithInvalidName(String name) {
+        try {
+            categoryServices.update(new Category(name));
+            fail("An error should have been thrown");
+        } catch (FieldNotValidException e) {
+            assertThat(e.getFieldName(), is(equalTo("name")));
+        }
+    }
+
+
 
 }

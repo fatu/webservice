@@ -10,4 +10,7 @@ import com.library.app.common.exception.FieldNotValidException;
 public interface CategoryServices {
 
     Category add(Category category) throws FieldNotValidException, CategoryExistentException;
+
+    void update(Category category) throws FieldNotValidException;
+
 }
