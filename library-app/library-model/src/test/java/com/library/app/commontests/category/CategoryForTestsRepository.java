@@ -13,7 +13,7 @@ import java.util.List;
 public class CategoryForTestsRepository {
 
     public static Category java() {
-        return new Category("java");
+        return new Category("Java");
     }
 
     public static Category cleanCode() {
@@ -24,8 +24,8 @@ public class CategoryForTestsRepository {
         return new Category("Architecture");
     }
 
-    public static Category network() {
-        return new Category("network");
+    public static Category networks() {
+        return new Category("Networks");
     }
 
     public static Category categoryWithId(Category category, Long id) {
@@ -34,7 +34,7 @@ public class CategoryForTestsRepository {
     }
 
     public static List<Category> allCategories() {
-        return Arrays.asList(java(), cleanCode(), architecture(), network());
+        return Arrays.asList(java(), cleanCode(), architecture(), networks());
     }
 
 }

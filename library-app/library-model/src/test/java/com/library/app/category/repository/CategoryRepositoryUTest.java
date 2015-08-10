@@ -97,7 +97,7 @@ public class CategoryRepositoryUTest {
         assertThat(categories.get(0).getName(), is(equalTo(architecture().getName())));
         assertThat(categories.get(1).getName(), is(equalTo(cleanCode().getName())));
         assertThat(categories.get(2).getName(), is(equalTo(java().getName())));
-        assertThat(categories.get(3).getName(), is(equalTo(network().getName())));
+        assertThat(categories.get(3).getName(), is(equalTo(networks().getName())));
     }
 
     @Test
@@ -123,7 +123,7 @@ public class CategoryRepositoryUTest {
         java.setName(cleanCode().getName());
         assertThat(categoryRepository.alreadyExists(java), is(equalTo(true)));
 
-        java.setName(network().getName());
+        java.setName(networks().getName());
         assertThat(categoryRepository.alreadyExists(java), is(equalTo(false)));
     }
 
