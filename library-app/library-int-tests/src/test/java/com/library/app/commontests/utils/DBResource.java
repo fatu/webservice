@@ -4,17 +4,15 @@ import javax.inject.Inject;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.Path;
 
-/**
- * @author fatu
- */
 @Path("/DB")
 public class DBResource {
 
-    @Inject
-    private TestRepositoryEJB testRepositoryEJB;
+	@Inject
+	private TestRepositoryEJB tesRepositoryEJB;
 
-    @DELETE
-    public void deleteAll() {
-        testRepositoryEJB.deleteAll();
-    }
+	@DELETE
+	public void deleteAll() {
+		tesRepositoryEJB.deleteAll();
+	}
+
 }

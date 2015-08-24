@@ -1,22 +1,19 @@
 package com.library.app.commontests.utils;
 
-
 import org.junit.Ignore;
 
-/**
- * @author fatu
- */
 @Ignore
 public enum ResourceDefinitions {
-    CATEGORY("categories");
+	CATEGORY("categories"),
+	AUTHOR("authors");
 
-    private String resourceName;
+	private String resourceName;
 
-    private ResourceDefinitions(String resourceName) {
-        this.resourceName = resourceName;
-    }
+	private ResourceDefinitions(final String resourceName) {
+		this.resourceName = resourceName;
+	}
 
-    public String getResourceName() {
-        return resourceName;
-    }
+	public String getResourceName() {
+		return resourceName;
+	}
 }

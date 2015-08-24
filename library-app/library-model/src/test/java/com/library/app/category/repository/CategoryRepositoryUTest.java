@@ -1,139 +1,128 @@
 package com.library.app.category.repository;
 
-import com.library.app.category.model.Category;
-import com.library.app.commontests.utils.DBCommandTransactionalExecutor;
+import static com.library.app.commontests.category.CategoryForTestsRepository.*;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+
+import java.util.List;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import com.library.app.category.model.Category;
+import com.library.app.commontests.utils.TestBaseRepository;
 
-import java.util.List;
+public class CategoryRepositoryUTest extends TestBaseRepository {
+	private CategoryRepository categoryRepository;
 
-import static com.library.app.commontests.category.CategoryForTestsRepository.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertThat;
+	@Before
+	public void initTestCase() {
+		initializeTestDB();
 
-/**
- * @author fatu
- */
-public class CategoryRepositoryUTest {
+		categoryRepository = new CategoryRepository();
+		categoryRepository.em = em;
+	}
 
-    private EntityManagerFactory emf;
-    private EntityManager em;
-    private CategoryRepository categoryRepository;
-    private DBCommandTransactionalExecutor dBCommandTransactionalExecutor;
+	@After
+	public void setDownTestCase() {
+		closeEntityManager();
+	}
 
-    @Before
-    public void initTestCase() throws Exception {
-        emf = Persistence.createEntityManagerFactory("libraryPU");
-        em = emf.createEntityManager();
+	@Test
+	public void addCategoryAndFindIt() {
+		final Long categoryAddedId = dbCommandExecutor.executeCommand(() -> {
+			return categoryRepository.add(java()).getId();
+		});
 
-        categoryRepository = new CategoryRepository();
-        categoryRepository.em = em;
+		assertThat(categoryAddedId, is(notNullValue()));
 
-        dBCommandTransactionalExecutor = new DBCommandTransactionalExecutor(em);
-    }
+		final Category category = categoryRepository.findById(categoryAddedId);
+		assertThat(category, is(notNullValue()));
+		assertThat(category.getName(), is(equalTo(java().getName())));
+	}
 
-    @After
-    public void closeEntityManager() throws Exception {
-        em.close();
-        emf.close();
-    }
+	@Test
+	public void findCategoryByIdNotFound() {
+		final Category category = categoryRepository.findById(999L);
+		assertThat(category, is(nullValue()));
+	}
 
-    @Test
-    public void testAddCategoryAndFindIt() throws Exception {
-        Long categoryAddedId = dBCommandTransactionalExecutor.executeCommand(() -> categoryRepository.add(java()).getId());
+	@Test
+	public void findCategoryByIdWithNullId() {
+		final Category category = categoryRepository.findById(null);
+		assertThat(category, is(nullValue()));
+	}
 
-        assertThat(categoryAddedId, is(notNullValue()));
+	@Test
+	public void updateCategory() {
+		final Long categoryAddedId = dbCommandExecutor.executeCommand(() -> {
+			return categoryRepository.add(java()).getId();
+		});
 
-        final Category category = categoryRepository.findById(categoryAddedId);
-        assertThat(category, is(notNullValue()));
-        assertThat(category.getName(), is(equalTo(java().getName())));
-    }
+		final Category categoryAfterAdd = categoryRepository.findById(categoryAddedId);
+		assertThat(categoryAfterAdd.getName(), is(equalTo(java().getName())));
 
-    @Test
-    public void testFindCategoryByIdNotFound() throws Exception {
-        final Category category = categoryRepository.findById(999L);
-        assertThat(category, is(nullValue()));
-    }
+		categoryAfterAdd.setName(cleanCode().getName());
+		dbCommandExecutor.executeCommand(() -> {
+			categoryRepository.update(categoryAfterAdd);
+			return null;
+		});
 
-    @Test
-    public void testFindCategoryByIdWithNullId() throws Exception {
-        final Category category = categoryRepository.findById(null);
-        assertThat(category, is(nullValue()));
-    }
+		final Category categoryAfterUpdate = categoryRepository.findById(categoryAddedId);
+		assertThat(categoryAfterUpdate.getName(), is(equalTo(cleanCode().getName())));
+	}
 
-    @Test
-    public void testUpdateCategory() throws Exception {
-        final Long categoryAddedId = dBCommandTransactionalExecutor.executeCommand(() -> {
-            return categoryRepository.add(java()).getId();
-        });
+	@Test
+	public void findAllCategories() {
+		dbCommandExecutor.executeCommand(() -> {
+			allCategories().forEach(categoryRepository::add);
+			return null;
+		});
 
-        Category categoryAfterAdd = categoryRepository.findById(categoryAddedId);
-        assertThat(categoryAfterAdd.getName(), is(equalTo(java().getName())));
+		final List<Category> categories = categoryRepository.findAll("name");
+		assertThat(categories.size(), is(equalTo(4)));
+		assertThat(categories.get(0).getName(), is(equalTo(architecture().getName())));
+		assertThat(categories.get(1).getName(), is(equalTo(cleanCode().getName())));
+		assertThat(categories.get(2).getName(), is(equalTo(java().getName())));
+		assertThat(categories.get(3).getName(), is(equalTo(networks().getName())));
+	}
 
-        categoryAfterAdd.setName(cleanCode().getName());
-        dBCommandTransactionalExecutor.executeCommand(() -> {
-            categoryRepository.update(categoryAfterAdd);
-            return null;
-        });
+	@Test
+	public void alreadyExistsForAdd() {
+		dbCommandExecutor.executeCommand(() -> {
+			categoryRepository.add(java());
+			return null;
+		});
 
-        Category categoryAfterUpdate = categoryRepository.findById(categoryAddedId);
-        assertThat(categoryAfterUpdate.getName(), is(equalTo(cleanCode().getName())));
-    }
+		assertThat(categoryRepository.alreadyExists(java()), is(equalTo(true)));
+		assertThat(categoryRepository.alreadyExists(cleanCode()), is(equalTo(false)));
+	}
 
-    @Test
-    public void testFindALlCategories() throws Exception {
-        dBCommandTransactionalExecutor.executeCommand(() -> {
-            allCategories().forEach(categoryRepository::add);
-            return null;
-        });
+	@Test
+	public void alreadyExistsCategoryWithId() {
+		final Category java = dbCommandExecutor.executeCommand(() -> {
+			categoryRepository.add(cleanCode());
+			return categoryRepository.add(java());
+		});
 
-        List<Category> categories = categoryRepository.findAll("name");
-        assertThat(categories.size(), is(equalTo(4)));
-        assertThat(categories.get(0).getName(), is(equalTo(architecture().getName())));
-        assertThat(categories.get(1).getName(), is(equalTo(cleanCode().getName())));
-        assertThat(categories.get(2).getName(), is(equalTo(java().getName())));
-        assertThat(categories.get(3).getName(), is(equalTo(networks().getName())));
-    }
+		assertThat(categoryRepository.alreadyExists(java), is(equalTo(false)));
 
-    @Test
-    public void testAlreadyExistsForAdd() throws Exception {
-        dBCommandTransactionalExecutor.executeCommand(()-> {
-            categoryRepository.add(java());
-            return null;
-        });
+		java.setName(cleanCode().getName());
+		assertThat(categoryRepository.alreadyExists(java), is(equalTo(true)));
 
-        assertThat(categoryRepository.alreadyExists(java()), is(equalTo(true)));
-        assertThat(categoryRepository.alreadyExists(cleanCode()), is(equalTo(false)));
-    }
+		java.setName(networks().getName());
+		assertThat(categoryRepository.alreadyExists(java), is(equalTo(false)));
+	}
 
-    @Test
-    public void testAlreadyExistsCategoryWithId() throws Exception {
-        final Category java = dBCommandTransactionalExecutor.executeCommand(() -> {
-            categoryRepository.add(cleanCode());
-            return categoryRepository.add(java());
-        });
+	@Test
+	public void existsById() {
+		final Long categoryAddedId = dbCommandExecutor.executeCommand(() -> {
+			return categoryRepository.add(java()).getId();
+		});
 
-        assertThat(categoryRepository.alreadyExists(java), is(equalTo(false)));
+		assertThat(categoryRepository.existsById(categoryAddedId), is(equalTo(true)));
+		assertThat(categoryRepository.existsById(999L), is(equalTo(false)));
+	}
 
-        java.setName(cleanCode().getName());
-        assertThat(categoryRepository.alreadyExists(java), is(equalTo(true)));
-
-        java.setName(networks().getName());
-        assertThat(categoryRepository.alreadyExists(java), is(equalTo(false)));
-    }
-
-    @Test
-    public void testExistsById() throws Exception {
-        final Long categoryAddedId = dBCommandTransactionalExecutor.executeCommand(() -> {
-            return categoryRepository.add(java()).getId();
-        });
-
-        assertThat(categoryRepository.existsById(categoryAddedId), is(equalTo(true)));
-        assertThat(categoryRepository.existsById(999L), is(equalTo(false)));
-    }
 }
