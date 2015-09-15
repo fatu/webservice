@@ -2,6 +2,8 @@ package com.library.app.author.resource;
 
 import static com.library.app.common.model.StandardsOperationResults.*;
 
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -36,6 +38,7 @@ import com.library.app.common.model.ResourceMessage;
 @Path("/authors")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@RolesAllowed({ "EMPLOYEE" })
 public class AuthorResource {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
@@ -116,6 +119,7 @@ public class AuthorResource {
 	}
 
 	@GET
+	@PermitAll
 	public Response findByFilter() {
 		final AuthorFilter authorFilter = new AuthorFilterExtractorFromUrl(uriInfo).getFilter();
 		logger.debug("Finding authors using filter: {}", authorFilter);

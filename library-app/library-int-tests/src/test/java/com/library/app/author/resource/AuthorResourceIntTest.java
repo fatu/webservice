@@ -1,6 +1,7 @@
 package com.library.app.author.resource;
 
 import static com.library.app.commontests.author.AuthorForTestsRepository.*;
+import static com.library.app.commontests.user.UserForTestsRepository.*;
 import static com.library.app.commontests.utils.FileTestNameUtils.*;
 import static com.library.app.commontests.utils.JsonTestUtils.*;
 import static org.hamcrest.CoreMatchers.*;
@@ -49,6 +50,8 @@ public class AuthorResourceIntTest {
 		this.resourceClient = new ResourceClient(url);
 
 		resourceClient.resourcePath("/DB").delete();
+		resourceClient.resourcePath("DB/" + ResourceDefinitions.USER.getResourceName()).postWithContent("");
+		resourceClient.user(admin());
 	}
 
 	@Test
@@ -113,6 +116,27 @@ public class AuthorResourceIntTest {
 		response = resourceClient.resourcePath(PATH_RESOURCE + "?page=1&per_page=10&sort=-name").get();
 		assertThat(response.getStatus(), is(equalTo(HttpCode.OK.getCode())));
 		assertResponseContainsTheAuthors(response, 12, erichGamma(), donRoberts());
+	}
+
+	@Test
+	@RunAsClient
+	public void findByFilterWithNoUser() {
+		final Response response = resourceClient.user(null).resourcePath(PATH_RESOURCE).get();
+		assertThat(response.getStatus(), is(equalTo(HttpCode.UNAUTHORIZED.getCode())));
+	}
+
+	@Test
+	@RunAsClient
+	public void findByFilterWithUserCustomer() {
+		final Response response = resourceClient.user(johnDoe()).resourcePath(PATH_RESOURCE).get();
+		assertThat(response.getStatus(), is(equalTo(HttpCode.OK.getCode())));
+	}
+
+	@Test
+	@RunAsClient
+	public void findByIdIdWithUserCustomer() {
+		final Response response = resourceClient.user(johnDoe()).resourcePath(PATH_RESOURCE + "/999").get();
+		assertThat(response.getStatus(), is(equalTo(HttpCode.FORBIDDEN.getCode())));
 	}
 
 	private Long addAuthorAndGetId(final String fileName) {

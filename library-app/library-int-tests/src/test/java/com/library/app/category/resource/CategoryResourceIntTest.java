@@ -1,6 +1,7 @@
 package com.library.app.category.resource;
 
 import static com.library.app.commontests.category.CategoryForTestsRepository.*;
+import static com.library.app.commontests.user.UserForTestsRepository.*;
 import static com.library.app.commontests.utils.FileTestNameUtils.*;
 import static com.library.app.commontests.utils.JsonTestUtils.*;
 import static org.hamcrest.CoreMatchers.*;
@@ -49,6 +50,8 @@ public class CategoryResourceIntTest {
 		this.resourceClient = new ResourceClient(url);
 
 		resourceClient.resourcePath("/DB").delete();
+		resourceClient.resourcePath("DB/" + ResourceDefinitions.USER.getResourceName()).postWithContent("");
+		resourceClient.user(admin());
 	}
 
 	@Test
@@ -127,6 +130,27 @@ public class CategoryResourceIntTest {
 		final Response response = resourceClient.resourcePath(PATH_RESOURCE).get();
 		assertThat(response.getStatus(), is(equalTo(HttpCode.OK.getCode())));
 		assertResponseContainsTheCategories(response, 4, architecture(), cleanCode(), java(), networks());
+	}
+
+	@Test
+	@RunAsClient
+	public void findAllCategoriesWithNoUser() {
+		final Response response = resourceClient.user(null).resourcePath(PATH_RESOURCE).get();
+		assertThat(response.getStatus(), is(equalTo(HttpCode.UNAUTHORIZED.getCode())));
+	}
+
+	@Test
+	@RunAsClient
+	public void findAllCategoriesWithUserCustomer() {
+		final Response response = resourceClient.user(johnDoe()).resourcePath(PATH_RESOURCE).get();
+		assertThat(response.getStatus(), is(equalTo(HttpCode.OK.getCode())));
+	}
+
+	@Test
+	@RunAsClient
+	public void findCategoryByIdWithUserCustomer() {
+		final Response response = resourceClient.user(johnDoe()).resourcePath(PATH_RESOURCE + "/999").get();
+		assertThat(response.getStatus(), is(equalTo(HttpCode.FORBIDDEN.getCode())));
 	}
 
 	private void assertResponseContainsTheCategories(final Response response, final int expectedTotalRecords,

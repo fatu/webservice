@@ -1,9 +1,14 @@
 package com.library.app.common.repository;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+
+import com.library.app.common.model.PaginatedData;
+import com.library.app.common.model.filter.PaginationData;
 
 public abstract class GenericRepository<T> {
 
@@ -59,4 +64,49 @@ public abstract class GenericRepository<T> {
 				.getResultList().size() > 0;
 	}
 
+	@SuppressWarnings("unchecked")
+	protected PaginatedData<T> findByParameters(final String clause, final PaginationData paginationData,
+			final Map<String, Object> queryParameters, final String defaultSortFieldWithDirection) {
+		final String clauseSort = "Order by e." + getSortField(paginationData, defaultSortFieldWithDirection);
+		final Query queryEntities = getEntityManager().createQuery(
+				"Select e From " + getPersistentClass().getSimpleName()
+						+ " e " + clause + " " + clauseSort);
+		applyQueryParametersOnQuery(queryParameters, queryEntities);
+		applyPaginationOnQuery(paginationData, queryEntities);
+
+		final List<T> entities = queryEntities.getResultList();
+
+		return new PaginatedData<T>(countWithFilter(clause, queryParameters), entities);
+	}
+
+	private int countWithFilter(final String clause, final Map<String, Object> queryParameters) {
+		final Query queryCount = getEntityManager().createQuery(
+				"Select count(e) From " + getPersistentClass().getSimpleName() + " e " + clause);
+		applyQueryParametersOnQuery(queryParameters, queryCount);
+		return ((Long) queryCount.getSingleResult()).intValue();
+	}
+
+	private void applyPaginationOnQuery(final PaginationData paginationData, final Query query) {
+		if (paginationData != null) {
+			query.setFirstResult(paginationData.getFirstResult());
+			query.setMaxResults(paginationData.getMaxResults());
+		}
+	}
+
+	private String getSortField(final PaginationData paginationData, final String defaultSortField) {
+		if (paginationData == null || paginationData.getOrderField() == null) {
+			return defaultSortField;
+		}
+		return paginationData.getOrderField() + " " + getSortDirection(paginationData);
+	}
+
+	private String getSortDirection(final PaginationData paginationData) {
+		return paginationData.isAscending() ? "ASC" : "DESC";
+	}
+
+	private void applyQueryParametersOnQuery(final Map<String, Object> queryParameters, final Query query) {
+		for (final Entry<String, Object> entryMap : queryParameters.entrySet()) {
+			query.setParameter(entryMap.getKey(), entryMap.getValue());
+		}
+	}
 }

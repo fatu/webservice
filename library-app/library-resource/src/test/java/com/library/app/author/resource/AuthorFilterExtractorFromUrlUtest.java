@@ -1,14 +1,12 @@
 package com.library.app.author.resource;
 
+import static com.library.app.commontests.utils.FilterExtractorTestUtils.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
 import org.junit.Before;
@@ -78,7 +76,6 @@ public class AuthorFilterExtractorFromUrlUtest {
 		assertThat(authorFilter.getName(), is(equalTo("Robert")));
 	}
 
-	@SuppressWarnings("unchecked")
 	private void setUpUriInfo(final String page, final String perPage, final String name, final String sort) {
 		final Map<String, String> parameters = new LinkedHashMap<>();
 		parameters.put("page", page);
@@ -86,21 +83,7 @@ public class AuthorFilterExtractorFromUrlUtest {
 		parameters.put("name", name);
 		parameters.put("sort", sort);
 
-		final MultivaluedMap<String, String> multiMap = mock(MultivaluedMap.class);
-
-		for (final Entry<String, String> keyValue : parameters.entrySet()) {
-			when(multiMap.getFirst(keyValue.getKey())).thenReturn(keyValue.getValue());
-		}
-
-		when(uriInfo.getQueryParameters()).thenReturn(multiMap);
-	}
-
-	private static void assertActualPaginationDataWithExpected(final PaginationData actual,
-			final PaginationData expected) {
-		assertThat(actual.getFirstResult(), is(equalTo(expected.getFirstResult())));
-		assertThat(actual.getMaxResults(), is(equalTo(expected.getMaxResults())));
-		assertThat(actual.getOrderField(), is(equalTo(expected.getOrderField())));
-		assertThat(actual.getOrderMode(), is(equalTo(expected.getOrderMode())));
+		setUpUriInfoWithMap(uriInfo, parameters);
 	}
 
 }
