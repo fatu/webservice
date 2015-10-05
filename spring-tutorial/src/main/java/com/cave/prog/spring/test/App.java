@@ -1,6 +1,7 @@
 package com.cave.prog.spring.test;
 
 import com.cave.prog.spring.test.autowiring.Logger;
+import com.cave.prog.spring.test.autowiring.Robot;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -10,10 +11,9 @@ public class App {
 
         ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
 
-        Logger logger = (Logger) context.getBean("logger");
+        Robot robot = (Robot) context.getBean("robot");
 
-        logger.writeConsole("Hello there");
-        logger.writeFile("Hi again");
+        robot.speak();
 
         ((ClassPathXmlApplicationContext) context).close();
     }
