@@ -9,7 +9,6 @@ import javax.inject.Inject;
 /**
  * @author fatu
  */
-@Component
 public class Robot {
 
     private String id = "Default robot";
@@ -19,11 +18,12 @@ public class Robot {
         System.out.println(id + ": " + speech);
     }
 
-    public void setId(String id) {
+    @Autowired
+    public void setId(@Value("${jdbc.user}") String id) {
         this.id = id;
     }
 
-    public void setSpeech(String speech) {
+    public void setSpeech(@Value("#{jdbc.password}") String speech) {
         this.speech = speech;
     }
 }
