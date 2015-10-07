@@ -10,24 +10,16 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql" %>
 
 <html>
-  <head>
+<head>
     <title></title>
-  </head>
-  <body>
-  Hi There!
+</head>
+<body>
 
-  <sql:query var="rs" dataSource="jdbc/spring">
-      select id, name, email, text from offers
-  </sql:query>
+<p><a href="${pageContext.request.contextPath}/offers">Show current offers.</a></p>
 
-
-  <c:forEach var="row" items="${rs.rows}">
-      ID: ${row.id}<br/>
-      Name: ${row.name}<br/>
-      Email: ${row.email}<br/>
-      Text: ${row.text}<br/>
-  </c:forEach>
+<p><a href="${pageContext.request.contextPath}/createoffer">Add a new offer.</a></p>
 
 
-  </body>
+
+</body>
 </html>

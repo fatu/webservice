@@ -38,7 +38,10 @@
 
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>classpath:config/dao-context.xml</param-value>
+        <param-value>
+            classpath:config/dao-context.xml
+            classpath:config/service-context.xml
+        </param-value>
     </context-param>
 
 </web-app>
