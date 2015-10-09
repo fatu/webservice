@@ -24,4 +24,12 @@ public class OffersService {
     public List<Offer> getCurrent() {
         return offersDAO.getOffers();
     }
+
+    public void create(Offer offer) {
+        offersDAO.create(offer);
+    }
+
+    public void throwTestException() {
+        offersDAO.getOffers(99999);
+    }
 }
