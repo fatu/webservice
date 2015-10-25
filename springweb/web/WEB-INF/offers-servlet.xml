@@ -19,4 +19,8 @@
         <property name="suffix" value=".jsp"></property>
     </bean>
     <mvc:resources mapping="/static/**" location="/resources/"/>
+
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basename" value="messages.messages"></property>
+    </bean>
 </beans>

@@ -3,7 +3,6 @@ package com.olol.spring.web.dao;
 import com.olol.spring.web.validation.ValidEmail;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 /**
@@ -13,7 +12,7 @@ public class Offer {
     private int id;
 
     @NotNull
-    @Size(min = 5, max = 100, message = "Name must be between 5 and 100 characters.")
+    @Size(min = 3, max = 100, message = "Name must be between 3 and 100 characters.")
     private String name;
 
     @NotNull
@@ -76,10 +75,10 @@ public class Offer {
     @Override
     public String toString() {
         return "Offer{" +
-            "id=" + id +
-            ", name='" + name + '\'' +
-            ", email='" + email + '\'' +
-            ", text='" + text + '\'' +
-            '}';
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", text='" + text + '\'' +
+                '}';
     }
 }
