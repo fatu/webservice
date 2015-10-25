@@ -10,9 +10,16 @@ public class App {
     public static void main(String[] args) {
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
 
-        Camera camera = (Camera) context.getBean("camera");
 
-        camera.snap();
+        IBlender blender = (IBlender) context.getBean("blender");
+        blender.blend();
+
+        ((IMachine)blender).start();
+
+        IFan fan = (IFan) context.getBean("fan");
+        fan.activate(5);
+
+        ((IMachine)fan).start();
 
         context.close();
     }

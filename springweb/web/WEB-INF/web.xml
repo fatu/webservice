@@ -13,6 +13,7 @@
         <welcome-file>default.jsp</welcome-file>
     </welcome-file-list>
     <servlet>
+        <description></description>
         <display-name>offers</display-name>
         <servlet-name>offers</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -41,7 +42,20 @@
         <param-value>
             classpath:config/dao-context.xml
             classpath:config/service-context.xml
+            classpath:config/security-context.xml
         </param-value>
     </context-param>
 
+    <filter>
+        <display-name>springSecurityFilterChain</display-name>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <session-config>
+        <session-timeout>20</session-timeout>
+    </session-config>
 </web-app>
