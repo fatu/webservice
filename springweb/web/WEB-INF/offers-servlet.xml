@@ -14,13 +14,24 @@
     <context:component-scan base-package="com.olol.spring.web.controllers"></context:component-scan>
 
     <mvc:annotation-driven></mvc:annotation-driven>
-    <bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="prefix" value="/WEB-INF/jsps/"></property>
-        <property name="suffix" value=".jsp"></property>
-    </bean>
+    <!--<bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">-->
+        <!--<property name="prefix" value="/WEB-INF/jsps/"></property>-->
+        <!--<property name="suffix" value=".jsp"></property>-->
+    <!--</bean>-->
     <mvc:resources mapping="/static/**" location="/resources/"/>
 
     <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
         <property name="basename" value="messages.messages"></property>
+    </bean>
+
+    <bean id="tilesViewResolver" class="org.springframework.web.servlet.view.tiles2.TilesViewResolver">
+    </bean>
+
+    <bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
+        <property name="definitions">
+            <list>
+                <value>/WEB-INF/layouts/default.xml</value>
+            </list>
+        </property>
     </bean>
 </beans>
