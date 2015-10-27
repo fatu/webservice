@@ -1,2 +1,1 @@
-<p>Footer goes here.</p>
-Created by olol http://olol.com
+Created by John W Purcell http://www.caveofprogramming.com
