@@ -15,11 +15,11 @@ import java.util.List;
  * @author fatu
  */
 @Component("offersDao")
-public class OffersDAO {
+public class OffersDao {
 
     private NamedParameterJdbcTemplate jdbc;
 
-    public OffersDAO() {
+    public OffersDao() {
         System.out.println("Successfully loaded offers DAO");
     }
 

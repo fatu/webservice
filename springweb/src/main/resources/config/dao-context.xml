@@ -13,13 +13,19 @@
     <context:annotation-config></context:annotation-config>
     <context:component-scan base-package="com.olol.spring.web.dao"></context:component-scan>
 
-    <jee:jndi-lookup jndi-name="jdbc/spring" id="dataSource" expected-type="javax.sql.DataSource">
+    <beans profile="production">
 
-    </jee:jndi-lookup>
+        <jee:jndi-lookup jndi-name="jdbc/spring" id="dataSource" expected-type="javax.sql.DataSource">
 
-    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="dataSource"></property>
-    </bean>
+        </jee:jndi-lookup>
 
-    <tx:annotation-driven></tx:annotation-driven>
+        <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+            <property name="dataSource" ref="dataSource"></property>
+        </bean>
+
+        <tx:annotation-driven></tx:annotation-driven>
+
+    </beans>
+
+
 </beans>

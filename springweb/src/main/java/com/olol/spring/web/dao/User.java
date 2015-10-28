@@ -77,4 +77,27 @@ public class User {
     public void setAuthority(final String authority) {
         this.authority = authority;
     }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final User user = (User) o;
+
+        if (enabled != user.enabled) return false;
+        if (username != null ? !username.equals(user.username) : user.username != null) return false;
+        if (email != null ? !email.equals(user.email) : user.email != null) return false;
+        return !(authority != null ? !authority.equals(user.authority) : user.authority != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = username != null ? username.hashCode() : 0;
+        result = 31 * result + (email != null ? email.hashCode() : 0);
+        result = 31 * result + (enabled ? 1 : 0);
+        result = 31 * result + (authority != null ? authority.hashCode() : 0);
+        return result;
+    }
 }
