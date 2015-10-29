@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.List;
 
 /**
@@ -29,7 +30,7 @@ public class OffersController {
         this.offersService = offersService;
     }
 
-    @RequestMapping(value="/test", method = RequestMethod.GET)
+    @RequestMapping(value = "/test", method = RequestMethod.GET)
     public String showTest(Model model, @RequestParam("id") String id) {
 
         System.out.println("Id is: " + id);
@@ -38,10 +39,14 @@ public class OffersController {
     }
 
 
-
-
     @RequestMapping("/offers")
-    public String showOffers(Model model) {
+    public String showOffers(Model model, Principal principal) {
+
+        if (principal != null) {
+            String username = principal.getName();
+            Offer offer = offersService.getOffer(username);
+        }
+
 
         List<Offer> offers = offersService.getCurrent();
 
@@ -51,20 +56,46 @@ public class OffersController {
     }
 
     @RequestMapping("/createoffer")
-    public String createOffer(Model model) {
+    public String createOffer(Model model, Principal principal) {
 
-        model.addAttribute("offer", new Offer());
+        Offer offer = null;
+
+        if (principal != null) {
+            String username = principal.getName();
+
+            offer = offersService.getOffer(username);
+        }
+
+
+        if (offer == null) {
+            offer = new Offer();
+        }
+        model.addAttribute("offer", offer);
 
         return "createoffer";
     }
 
     @RequestMapping(value = "/docreate", method = RequestMethod.POST)
-    public String doCreate(Model model, @Valid Offer offer, BindingResult result) {
+    public String doCreate(Model model, @Valid Offer offer, BindingResult result, Principal principal, @RequestParam
+            (value = "delete", required = false) String delete) {
         if (result.hasErrors()) {
             return "createoffer";
         }
-        offersService.create(offer);
-        return "offercreated";
+
+        if (delete == null) {
+            String username = principal.getName();
+
+            offer.getUser().setUsername(username);
+
+            offersService.saveOrUpdate(offer);
+            return "offercreated";
+        } else {
+            offersService.delete(offer.getId());
+            return "offerdeleted";
+        }
+
+
+
     }
 
 }

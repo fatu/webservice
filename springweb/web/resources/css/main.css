@@ -77,3 +77,7 @@ a.title {
     color: white;
     font-size: 35px;
 }
+
+input.delete {
+    border: 1px solid red;
+}

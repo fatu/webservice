@@ -31,4 +31,40 @@ public class OffersService {
         offersDao.create(offer);
     }
 
+    public boolean hasOffer(final String name) {
+        if (name == null) {
+            return false;
+        }
+
+        List<Offer> offers = offersDao.getOffers(name);
+
+        if (offers.size() == 0) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public Offer getOffer(final String username) {
+        if (username == null) {
+            return null;
+        }
+        List<Offer> offers = offersDao.getOffers(username);
+        if (offers.size() == 0) {
+            return null;
+        }
+        return offers.get(0);
+    }
+
+    public void saveOrUpdate(final Offer offer) {
+        if (offer.getId() != 0) {
+            offersDao.update(offer);
+        } else {
+            offersDao.create(offer);
+        }
+    }
+
+    public void delete(final int id) {
+        offersDao.delete(id);
+    }
 }

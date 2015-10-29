@@ -11,18 +11,23 @@ import javax.validation.constraints.Size;
  */
 public class User {
 
-    @NotBlank(message = "Username cannot be blank.")
+    @NotBlank
     @Size(min = 8, max = 15)
-    @Pattern(regexp = "^\\w{8,}$", message = "Username can only consist of numbers letters and the underscore character.")
+    @Pattern(regexp = "^\\w{8,}$")
     private String username;
 
-    @NotBlank(message = "Password cannot be blank.")
-    @Pattern(regexp = "^\\S+$", message = "Password cannot contain spaces.")
-    @Size(min = 8, max = 15, message = "Password must be between 8 and 15 characters long.")
+    @NotBlank
+    @Pattern(regexp = "^\\S+$")
+    @Size(min = 8, max = 15 )
     private String password;
 
-    @ValidEmail(message = "This does not appear to be a valid email address.")
+    @ValidEmail
     private String email;
+
+    @NotBlank
+    @Size(min = 8, max = 60)
+    private String name;
+
     private boolean enabled = false;
     private String authority;
 
@@ -30,9 +35,10 @@ public class User {
 
     }
 
-    public User(final String username, final String password, final String email, final boolean enabled, final String authority) {
+    public User(final String username, final String name, final String password, final String email, final boolean enabled, final String authority) {
         this.username = username;
         this.password = password;
+        this.name = name;
         this.email = email;
         this.enabled = enabled;
         this.authority = authority;
@@ -78,6 +84,14 @@ public class User {
         this.authority = authority;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(final String name) {
+        this.name = name;
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
@@ -88,6 +102,7 @@ public class User {
         if (enabled != user.enabled) return false;
         if (username != null ? !username.equals(user.username) : user.username != null) return false;
         if (email != null ? !email.equals(user.email) : user.email != null) return false;
+        if (name != null ? !name.equals(user.name) : user.name != null) return false;
         return !(authority != null ? !authority.equals(user.authority) : user.authority != null);
 
     }
@@ -96,6 +111,7 @@ public class User {
     public int hashCode() {
         int result = username != null ? username.hashCode() : 0;
         result = 31 * result + (email != null ? email.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (enabled ? 1 : 0);
         result = 31 * result + (authority != null ? authority.hashCode() : 0);
         return result;
