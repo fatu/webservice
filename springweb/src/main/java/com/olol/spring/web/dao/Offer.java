@@ -1,20 +1,26 @@
 package com.olol.spring.web.dao;
 
-import com.olol.spring.web.validation.ValidEmail;
-
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
  * @author fatu
  */
+@Entity
+@Table(name = "offers")
 public class Offer {
+
+    @Id
+    @GeneratedValue
     private int id;
 
-    @NotNull
-    @Size(min = 20, max = 255, message = "Text must be between 20 and 255 characters.")
+    @Size(min = 5, max = 255, groups = {PersistenceValidationGroup.class, FormValidationGroup.class})
+    @Column(name = "text")
     private String text;
 
+    @ManyToOne
+    @JoinColumn(name = "username")
     private User user;
 
     public Offer() {

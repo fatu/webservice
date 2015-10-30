@@ -26,9 +26,9 @@ public class OffersService {
         return offersDao.getOffers();
     }
 
-    @Secured({ "ROLE_USER", "ROLE_ADMIN" })
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     public void create(Offer offer) {
-        offersDao.create(offer);
+        offersDao.saveOrUpdate(offer);
     }
 
     public boolean hasOffer(final String name) {
@@ -57,11 +57,8 @@ public class OffersService {
     }
 
     public void saveOrUpdate(final Offer offer) {
-        if (offer.getId() != 0) {
-            offersDao.update(offer);
-        } else {
-            offersDao.create(offer);
-        }
+        offersDao.saveOrUpdate(offer);
+
     }
 
     public void delete(final int id) {

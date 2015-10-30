@@ -1,5 +1,6 @@
 package com.olol.spring.web.controllers;
 
+import com.olol.spring.web.dao.FormValidationGroup;
 import com.olol.spring.web.dao.Offer;
 import com.olol.spring.web.service.OffersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -76,7 +78,7 @@ public class OffersController {
     }
 
     @RequestMapping(value = "/docreate", method = RequestMethod.POST)
-    public String doCreate(Model model, @Valid Offer offer, BindingResult result, Principal principal, @RequestParam
+    public String doCreate(Model model, @Validated(value = FormValidationGroup.class) Offer offer, BindingResult result, Principal principal, @RequestParam
             (value = "delete", required = false) String delete) {
         if (result.hasErrors()) {
             return "createoffer";
