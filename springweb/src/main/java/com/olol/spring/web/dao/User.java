@@ -9,14 +9,17 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 /**
  * @author boaztu
  */
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements Serializable{
 
+
+    private static final long serialVersionUID = 6528342917738560198L;
     @NotBlank(groups = {PersistenceValidationGroup.class, FormValidationGroup.class})
     @Size(min = 8, max = 15, groups = {PersistenceValidationGroup.class, FormValidationGroup.class})
     @Pattern(regexp = "^\\w{8,}$", groups = {PersistenceValidationGroup.class, FormValidationGroup.class})

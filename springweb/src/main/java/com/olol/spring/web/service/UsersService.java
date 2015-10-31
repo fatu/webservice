@@ -1,6 +1,8 @@
 package com.olol.spring.web.service;
 
 
+import com.olol.spring.web.dao.Message;
+import com.olol.spring.web.dao.MessagesDao;
 import com.olol.spring.web.dao.User;
 import com.olol.spring.web.dao.UsersDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +17,11 @@ import java.util.List;
 @Service("usersService")
 public class UsersService {
 
+    @Autowired
     private UsersDao usersDao;
 
     @Autowired
-    public void setUsersDao(final UsersDao usersDao) {
-        this.usersDao = usersDao;
-    }
+    private MessagesDao messagesDao;
 
     public void create(User user) {
         usersDao.create(user);
@@ -33,5 +34,13 @@ public class UsersService {
     @Secured("ROLE_ADMIN")
     public List<User> getAllUsers() {
         return usersDao.getAllUsers();
+    }
+
+    public void sendMessage(Message message) {
+        messagesDao.saveOrUpdate(message);
+    }
+
+    public User getUser(String username) {
+        return usersDao.getUser(username);
     }
 }
